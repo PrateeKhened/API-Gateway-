@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # Database for the Authentication & Identity Service
+  auth-db:
+    image: postgres:16-alpine
+    container_name: api-platform-auth-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: platform_user
+      POSTGRES_PASSWORD: platform_secure_password
+      POSTGRES_DB: auth_db
+    ports:
+      - "5431:5432"
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U platform_user -d auth_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Database for the Usage Tracking & Analytics Service (isolated database instance)
+  usage-db:
+    image: postgres:16-alpine
+    container_name: api-platform-usage-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: platform_user
+      POSTGRES_PASSWORD: platform_secure_password
+      POSTGRES_DB: usage_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - usage_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U platform_user -d usage_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching, Rate Limiting (Token Bucket), and Event Brokerage (Redis Streams)
+  redis:
+    image: redis:7-alpine
+    container_name: api-platform-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  auth_db_data:
+  usage_db_data:
+  redis_data:
