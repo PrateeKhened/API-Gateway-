@@ -23,3 +23,15 @@ sql:
         emit_json_tags: true
         emit_interface: true
         emit_exact_table_names: false
+
+  # SQLC Code Generation for the Billing Service Database
+  - name: "billing"
+    schema: "schema/billing/"
+    queries: "schema/billing/"
+    gen:
+      go:
+        package: "billingdb"
+        out: "internal/db/billing"
+        emit_json_tags: true
+        emit_interface: true
+        emit_exact_table_names: false

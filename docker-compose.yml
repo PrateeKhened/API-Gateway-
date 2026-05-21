@@ -39,6 +39,25 @@ services:
       timeout: 5s
       retries: 5
 
+  # Database for the Billing & Invoicing Service (isolated database instance)
+  billing-db:
+    image: postgres:16-alpine
+    container_name: api-platform-billing-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: platform_user
+      POSTGRES_PASSWORD: platform_secure_password
+      POSTGRES_DB: billing_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - billing_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U platform_user -d billing_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   # Redis for caching, Rate Limiting (Token Bucket), and Event Brokerage (Redis Streams)
   redis:
     image: redis:7-alpine
@@ -58,4 +77,5 @@ services:
 volumes:
   auth_db_data:
   usage_db_data:
+  billing_db_data:
   redis_data:
