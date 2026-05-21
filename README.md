@@ -47,13 +47,16 @@ For a detailed walkthrough of the request lifecycle, see [gemini.md](./gemini.md
 │   ├── gateway/                 # Logic isolated to Gateway proxy
 │   └── db/                      # Generated database code (sqlc)
 │       ├── auth/                # Generated code for Auth DB
-│       └── usage/               # Generated code for Usage DB
+│       ├── usage/               # Generated code for Usage DB
+│       └── billing/             # Generated code for Billing DB
 ├── pkg/                         # Shared utilities across services
-│   ├── tokens/                  # Common JWT parsing/claims utilities
-│   └── logger/                  # Structured logging wrapper
+│   ├── logger/                  # Structured JSON logger with request ID support
+│   ├── apierror/                # Shared HTTP API error handler
+│   └── tokens/                  # Common JWT parsing/claims utilities
 ├── schema/                      # Database Schemas & Migrations
 │   ├── auth/                    # SQL migration files for auth db
-│   └── usage/                   # SQL migration files for usage db
+│   ├── usage/                   # SQL migration files for usage db
+│   └── billing/                 # SQL migration files for billing db
 ├── docker-compose.yml           # Local multi-container orchestration
 ├── sqlc.yaml                    # Code generator configuration
 ├── go.mod                       # Global dependencies list
