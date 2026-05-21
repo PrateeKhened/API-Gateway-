@@ -40,6 +40,14 @@ For a detailed walkthrough of the request lifecycle, see [gemini.md](./gemini.md
 ├── cmd/                         # Service Entry Points
 │   ├── auth/                    # Auth service binary main.go
 │   └── gateway/                 # Gateway service binary main.go
+├── services/                    # Independently deployable microservices
+│   ├── auth/                    # Auth service
+│   │   └── migrations/          # Auth database schema migrations (000001_...)
+│   ├── gateway/                 # API Gateway service
+│   ├── usage/                   # Usage tracking service
+│   │   └── migrations/          # Usage database schema migrations
+│   └── billing/                 # Billing service
+│       └── migrations/          # Billing database schema migrations
 ├── internal/                    # Private application code
 │   ├── auth/                    # Logic isolated to Auth service
 │   │   ├── handler/             # HTTP Route Handlers
@@ -53,10 +61,6 @@ For a detailed walkthrough of the request lifecycle, see [gemini.md](./gemini.md
 │   ├── logger/                  # Structured JSON logger with request ID support
 │   ├── apierror/                # Shared HTTP API error handler
 │   └── tokens/                  # Common JWT parsing/claims utilities
-├── schema/                      # Database Schemas & Migrations
-│   ├── auth/                    # SQL migration files for auth db
-│   ├── usage/                   # SQL migration files for usage db
-│   └── billing/                 # SQL migration files for billing db
 ├── docker-compose.yml           # Local multi-container orchestration
 ├── sqlc.yaml                    # Code generator configuration
 ├── go.mod                       # Global dependencies list
@@ -88,7 +92,7 @@ docker compose ps
 
 ### Database Migrations & SQLC
 
-When adding migrations to `schema/auth` or `schema/usage`, run the `sqlc` tool to regenerate Go models and queries:
+When adding migrations to a service (e.g. `services/auth/migrations/`), run the `sqlc` tool to regenerate Go models and queries:
 ```bash
 sqlc generate
 ```
