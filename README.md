@@ -42,27 +42,24 @@ For a detailed walkthrough of the request lifecycle, see [gemini.md](./gemini.md
 │   └── gateway/                 # Gateway service binary main.go
 ├── services/                    # Independently deployable microservices
 │   ├── auth/                    # Auth service
-│   │   └── migrations/          # Auth database schema migrations (000001_...)
+│   │   ├── migrations/          # Auth database schema migrations (000001_...)
+│   │   ├── db/                  # sqlc config, queries, and generated files
+│   │   │   ├── sqlc.yaml        # sqlc configuration
+│   │   │   ├── queries/         # raw SQL query definitions
+│   │   │   └── generated/       # type-safe Go generated code (dbgen)
+│   │   └── internal/            # Private auth-specific application code
+│   │       └── database/        # pgx database connection pool management
 │   ├── gateway/                 # API Gateway service
 │   ├── usage/                   # Usage tracking service
 │   │   └── migrations/          # Usage database schema migrations
 │   └── billing/                 # Billing service
 │       └── migrations/          # Billing database schema migrations
-├── internal/                    # Private application code
-│   ├── auth/                    # Logic isolated to Auth service
-│   │   ├── handler/             # HTTP Route Handlers
-│   │   └── service/             # Core business logic
-│   ├── gateway/                 # Logic isolated to Gateway proxy
-│   └── db/                      # Generated database code (sqlc)
-│       ├── auth/                # Generated code for Auth DB
-│       ├── usage/               # Generated code for Usage DB
-│       └── billing/             # Generated code for Billing DB
 ├── pkg/                         # Shared utilities across services
 │   ├── logger/                  # Structured JSON logger with request ID support
 │   ├── apierror/                # Shared HTTP API error handler
 │   └── tokens/                  # Common JWT parsing/claims utilities
 ├── docker-compose.yml           # Local multi-container orchestration
-├── sqlc.yaml                    # Code generator configuration
+├── sqlc.yaml                    # Code generator configuration (global template)
 ├── go.mod                       # Global dependencies list
 └── README.md                    # System architecture & documentation
 ```
