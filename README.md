@@ -37,32 +37,41 @@ For a detailed walkthrough of the request lifecycle, see [gemini.md](./gemini.md
 
 ```
 /api-platform-monorepo
-├── cmd/                         # Service Entry Points
-│   ├── auth/                    # Auth service binary main.go
-│   └── gateway/                 # Gateway service binary main.go
 ├── services/                    # Independently deployable microservices
 │   ├── auth/                    # Auth service
+│   │   ├── cmd/                 # Service entry point (main.go)
 │   │   ├── migrations/          # Auth database schema migrations (000001_...)
 │   │   ├── db/                  # sqlc config, queries, and generated files
 │   │   │   ├── sqlc.yaml        # sqlc configuration
 │   │   │   ├── queries/         # raw SQL query definitions
 │   │   │   └── generated/       # type-safe Go generated code (dbgen)
 │   │   └── internal/            # Private auth-specific application code
-│   │       └── database/        # pgx database connection pool management
+│   │       ├── database/        # pgx database connection pool management
+│   │       ├── handler/         # HTTP presentations & request decoders (Register)
+│   │       └── service/         # Domain workflow & business validations
 │   ├── gateway/                 # API Gateway service
 │   ├── usage/                   # Usage tracking service
-│   │   └── migrations/          # Usage database schema migrations
 │   └── billing/                 # Billing service
-│       └── migrations/          # Billing database schema migrations
 ├── pkg/                         # Shared utilities across services
 │   ├── logger/                  # Structured JSON logger with request ID support
-│   ├── apierror/                # Shared HTTP API error handler
-│   └── tokens/                  # Common JWT parsing/claims utilities
+│   └── apierror/                # Shared HTTP API error handler
 ├── docker-compose.yml           # Local multi-container orchestration
-├── sqlc.yaml                    # Code generator configuration (global template)
-├── go.mod                       # Global dependencies list
 └── README.md                    # System architecture & documentation
 ```
+
+---
+
+## Running the Auth Service
+
+To run the Auth Service locally:
+1. Ensure your local docker environment is running.
+2. Run the application passing the DSN:
+```bash
+export DB_DSN="postgres://platform_user:platform_secure_password@localhost:5431/auth_db?sslmode=disable"
+cd services/auth
+go run cmd/main.go
+```
+
 
 ---
 
